@@ -19,7 +19,7 @@
           "required": true,
           "filter": "*.*",
           "type": "FILE",
-          "description": "Kernel .config"
+          "description": "Kernel .config (ensure CONFIG_LOCALVERSION is set correctly)"
       },
       "description": "Build a kernel"
     }
