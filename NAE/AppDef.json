@@ -6,20 +6,28 @@
       "name": "Build",
       "scale_max": 128,
       "parameters": {
-        "major": {
+        "-v": {
           "positional": false,
           "name": "Kernel version",
           "required": true,
           "type": "STR",
           "description": "The kernel source to downloaded from https://cdn.kernel.org/pub/linux/kernel/ (e.g. 4.9 or 4.8.15)"
         },
-        "config": {
+        "-c": {
           "positional": false,
           "name": "Kernel config file",
           "required": true,
           "filter": "*.*",
           "type": "FILE",
           "description": "Kernel .config (ensure CONFIG_LOCALVERSION is set correctly)"
+        },
+        "-m": {
+          "positional": false,
+          "name": "mkinitcpio config file",
+          "required": true,
+          "filter": "*.conf",
+          "type": "FILE",
+          "description": "mkinitcpio.conf file used to build your initramfs"
         }
       },
       "description": "Build a kernel"
@@ -28,7 +36,7 @@
   "classifications": [
     "Development"
   ],
-  "description": "Quick Linux Kernel Compiler",
+  "description": "Fast ArchLinux Kernel Compiler",
   "author": "rep.movsd@gmail.com",
   "vault-types": [ "FILE" ],
   "licensed": true,
