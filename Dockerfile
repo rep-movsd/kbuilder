@@ -6,4 +6,3 @@ ADD ./scripts /usr/local/scripts/kbuilder
 
 USER nimbix
 ADD ./NAE/ /etc/NAE/
-
