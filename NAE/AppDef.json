@@ -1,7 +1,7 @@
 {
   "commands": {
     "build": {
-      "path": "/kbuild/build.sh",
+      "path": "/usr/local/scripts/kbuilder/build.sh",
       "interactive": false,
       "name": "Build",
       "scale_max": 128,
@@ -30,7 +30,7 @@
   ],
   "description": "Quick Linux Kernel Compiler",
   "author": "rep.movsd@gmail.com",
-  "vault-types": [ "BLOCK" ],
+  "vault-types": [ "FILE" ],
   "licensed": true,
   "image_icon": "default.png",
   "image": {
