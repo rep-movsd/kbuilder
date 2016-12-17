@@ -1,0 +1,37 @@
+{
+  "commands": {
+    "build": {
+      "path": "/kbuild/build.sh",
+      "interactive": false,
+      "name": "Build",
+      "scale_max": 1,
+      "parameters": {
+        "-major": {
+          "positional": false,
+          "name": "Kernel version",
+          "required": true,
+          "type": "string",
+          "description": "The kernel source to downloaded from https://cdn.kernel.org/pub/linux/kernel/ (e.g. 4.9 or 4.8.15)"
+        },
+        "-config": {
+          "positional": false,
+          "name": "Kernel config file",
+          "required": true,
+          "filter": "*.*",
+          "type": "FILE",
+          "description": "Kernel .config"
+      },
+      "description": "Build a kernel"
+    }
+  },
+  "classifications": [
+    "Development"
+  ],
+  "description": "KBuilder builds your Linux kernels extremely fast on the Nimbix compute cluster",
+  "author": "rep.movsd@gmail.com",
+  "vault-types": [ "BLOCK" ],
+  "licensed": true,
+  "image_icon": "default.png",
+  "machines": [ "n0", "n2", "n3"],
+  "name": "Kernel Builder"
+}
