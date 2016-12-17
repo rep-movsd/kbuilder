@@ -1,25 +1,32 @@
 {
-  "commands": {
-    "build": {
+  "commands":
+  {
+    "build":
+    {
       "path": "/kbuild/build.sh",
       "interactive": false,
       "name": "Build",
       "scale_max": 1,
-      "parameters": {
-        "-major": {
+      "parameters":
+      {
+        "major":
+        {
           "positional": false,
           "name": "Kernel version",
           "required": true,
-          "type": "string",
+          "type": "STR",
           "description": "The kernel source to downloaded from https://cdn.kernel.org/pub/linux/kernel/ (e.g. 4.9 or 4.8.15)"
         },
-        "-config": {
+
+        "config":
+        {
           "positional": false,
           "name": "Kernel config file",
           "required": true,
           "filter": "*.*",
           "type": "FILE",
           "description": "Kernel .config (ensure CONFIG_LOCALVERSION is set correctly)"
+        }
       },
       "description": "Build a kernel"
     }
@@ -32,6 +39,7 @@
   "vault-types": [ "BLOCK" ],
   "licensed": true,
   "image_icon": "default.png",
+  "image": {"type": "image/png", "data": ""},
   "machines": [ "n0", "n2", "n3"],
   "name": "Kernel Builder"
 }
