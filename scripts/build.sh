@@ -39,23 +39,21 @@ tar xvf linux-${FILEVER}.tar.xz
 cd linux-${FILEVER}
 cp ${CONFIG} ./.config
 
-echo
-sudo cat /etc/mtab
-echo
 
 time make -j$(nproc) && \
 make -j$(nproc) modules && \
 sudo make modules_install && \
-cp arch/x86/boot/bzImage ../vmlinuz-${FILEVER} &&
-mkinitcpio mkinitcpio -n -v -c ${MKINITCPIOCONF} -g ../initramfs-${FILEVER}${SUFFIX}.img -k ${MODULEDIR} && \
+sudo cp arch/x86/boot/bzImage ../vmlinuz-${FILEVER} &&
+sudo make headers_install &&
+sudo mkinitcpio mkinitcpio -n -v -c ${MKINITCPIOCONF} -g ../initramfs-${FILEVER}${SUFFIX}.img -k ${MODULEDIR} && \
 sudo IGNORE_CC_MISMATCH=1 pacman -S --noconfirm nvidia-340xx-dkms &&
-sudo IGNORE_CC_MISMATCH=1 dkms uninstall nvidia/340.101 &&
-sudo IGNORE_CC_MISMATCH=1 dkms install nvidia/340.101
-sudo cat /var/lib/dkms/nvidia/340.101/build/make.log
+sudo IGNORE_CC_MISMATCH=1 dkms install nvidia/340.101 -k ${MODULEDIR}
 
-tar cf --xz ../modules-${MODULEDIR}.tar.xz ${MODULEDIR}/ &&
+cd /data/data
+tar cf --xz modules-${MODULEDIR}.tar.xz ${MODULEDIR}/ &&
 echo ------------------------ Done ------------------------- &&
 echo Built vmlinuz-${FILEVER}${SUFFIX} and initramfs-${FILEVER}${SUFFIX}.img &&
+echo Archived /lib/modules/${MODULEDIR} into modules-${MODULEDIR}.tar.xz
 echo && ls -la /data/data
 
 
