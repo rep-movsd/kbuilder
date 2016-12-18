@@ -31,6 +31,23 @@
         }
       },
       "description": "Build a kernel"
+    },
+
+    "cat": {
+      "path": "/usr/sbin/cat",
+      "interactive": false,
+      "name": "cat",
+      "scale_max": 128,
+      "parameters": {
+        "-n": {
+          "positional": false,
+          "name": "File",
+          "required": true,
+          "type": "STR",
+          "description": "File to cat"
+        }
+      },
+      "description": "cat a file"
     }
   },
   "classifications": [
