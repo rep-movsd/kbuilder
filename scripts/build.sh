@@ -4,12 +4,12 @@
 # Args are <kernel version> <config-file> <mkinitcpio-config-file> [clean]
 # 4.7.8 .config-slim mkinitcpio.conf true
 
-WORKDIR=/data/data
+WORKDIR=/dev/tmp
 DATADIR=/data/data
 OUTDIR=/data/data/out
 
-mkdir -p ${OUTDIR}
-mkdir -p ${WORKDIR}
+sudo mkdir -p ${OUTDIR}
+sudo mkdir -p ${WORKDIR}
 
 echo Working in ${WORKDIR}
 echo Output in ${OUTDIR}
@@ -22,6 +22,7 @@ test ${CONFIG} == '' && echo Invalid argument for 'kernel config file' && exit
 
 MKINITCPIOCONF=${3//[^0-9a-zA-Z_/\.\-]/}
 test ${MKINITCPIOCONF} == '' && echo Invalid argument for 'mkinitcpio config file' && exit
+
 
 DELETE=${4//[^a-z]/}
 
@@ -57,7 +58,7 @@ cd ${WORKDIR}
 test ${DELETE} == 'delete' && echo Deleting extracted files if any && rm -rf linux-${KERNEL_VERSION}
 
 echo Extracting archive...
-time tar --checkpoint=1000 --checkpoint-action="echo=#%u files extracted" -xf linux-${KERNEL_VERSION}.tar.xz &&
+time tar --checkpoint=10000 --checkpoint-action="echo=#%u files extracted" -xf linux-${KERNEL_VERSION}.tar.xz &&
 
 # Do the steps one by one
 cd linux-${KERNEL_VERSION} &&
@@ -75,14 +76,11 @@ sudo make modules_install &&
 echo [Installing headers] &&
 sudo make headers_install &&
 
-echo [Building initramfs] &&
-sudo mkinitcpio mkinitcpio -n -v -c ${MKINITCPIOCONF} -g ${OUTDIR}/initramfs-OUT_SUFFIX.img -k ${MODULE_VERSION} &&
-
 echo [Reinstalling nvidia dkms] &&
-sudo IGNORE_CC_MISMATCH=1 pacman -S --quiet --needed --noprogressbar --noconfirm nvidia-340xx-dkms &&
+sudo IGNORE_CC_MISMATCH=1 pacman -S --quiet --needed --noprogressbar --noconfirm nvidia-340xx-dkms
 
-echo [Uninstalling dkms module] &&
-sudo IGNORE_CC_MISMATCH=1 dkms uninstall nvidia/340.101 -k ${MODULE_VERSION} &&
+echo [Uninstalling dkms module]
+sudo IGNORE_CC_MISMATCH=1 dkms uninstall nvidia/340.101 -k ${MODULE_VERSION}
 
 echo [Reinstalling dkms module] &&
 sudo IGNORE_CC_MISMATCH=1 dkms install nvidia/340.101 -k ${MODULE_VERSION} &&
@@ -90,19 +88,18 @@ sudo IGNORE_CC_MISMATCH=1 dkms install nvidia/340.101 -k ${MODULE_VERSION} &&
 echo [Copying kernel image to output] &&
 cp arch/x86/boot/bzImage ${WORKDIR}/vmlinuz-OUT_SUFFIX &&
 
+echo [Building initramfs] &&
+sudo mkinitcpio mkinitcpio -n -v -c ${MKINITCPIOCONF} -g ${OUTDIR}/initramfs-OUT_SUFFIX.img -k ${MODULE_VERSION} &&
+
 echo [tar.xz-ing all modules] &&
 tar --xz -cf ${OUTDIR}/modules-${MODULE_VERSION}.tar.xz /lib/modules/${MODULE_VERSION}/ &&
 
 echo ------------------------ Done ------------------------- &&
 
-echo Built vmlinuz-OUT_SUFFIX and initramfs-OUT_SUFFIX.img &&
+echo Built vmlinuz-OUT_SUFFIX and initramfs-OUT_SUFFIX.img
 
 echo Archived /lib/modules/${MODULE_VERSION} into modules-${MODULE_VERSION}.tar.xz
 
-test ${DELETE} == 'delete' && echo Deleting extracted files if any && rm -rf ${WORKDIR}/linux-${KERNEL_VERSION} &&
-
 echo && ls -la ${OUTDIR}
 
-
-
-
+test ${DELETE} == 'delete' && echo Deleting extracted files if any && rm -rf ${WORKDIR}/linux-${KERNEL_VERSION}
