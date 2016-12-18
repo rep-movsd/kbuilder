@@ -90,7 +90,7 @@ echo [Reinstalling dkms module] &&
 sudo IGNORE_CC_MISMATCH=1 dkms install nvidia/340.101 -k ${MODULE_VERSION} &&
 
 echo [Copying kernel image to output] &&
-cp arch/x86/boot/bzImage ${WORKDIR}/vmlinuz-${OUT_SUFFIX} &&
+cp arch/x86/boot/bzImage ${OUTDIR}/vmlinuz-${OUT_SUFFIX} &&
 
 echo [Building initramfs] &&
 sudo mkinitcpio mkinitcpio -n -v -c ${MKINITCPIOCONF} -g ${OUTDIR}/initramfs-OUT_SUFFIX.img -k ${MODULE_VERSION} &&
