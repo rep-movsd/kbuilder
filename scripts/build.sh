@@ -4,8 +4,18 @@
 # Args are <kernel version> <config-file> <mkinitcpio-config-file> [clean]
 # 4.7.8 .config-slim mkinitcpio.conf true
 
-FILEVER=${1//[^0-9\.]/}
-test ${FILEVER} == '' && echo Invalid argument for 'version' && exit
+WORKDIR=/data/data
+DATADIR=/data/data
+OUTDIR=/data/data/out
+
+mkdir -p ${OUTDIR}
+mkdir -p ${WORKDIR}
+
+echo Working in ${WORKDIR}
+echo Output in ${OUTDIR}
+
+KERNEL_VERSION=${1//[^0-9\.]/}
+test ${KERNEL_VERSION} == '' && echo Invalid argument for 'version' && exit
 
 CONFIG=${2//[^0-9a-zA-Z_/\.\-]/}
 test ${CONFIG} == '' && echo Invalid argument for 'kernel config file' && exit
@@ -16,53 +26,82 @@ test ${MKINITCPIOCONF} == '' && echo Invalid argument for 'mkinitcpio config fil
 DELETE=${4//[^a-z]/}
 
 
-cd /data/data
-
-IFS='.' read -r -a vers <<< "$FILEVER"
-
-
+# First extract the version strings
+cd ${DATADIR}
+IFS='.' read -r -a vers <<< "$KERNEL_VERSION"
 CONFIG_LOCALVERSION=$(grep "^CONFIG_LOCALVERSION" ${CONFIG})
 IFS='=' read -r -a suff <<< "${CONFIG_LOCALVERSION}"
 if [ ${#vers[@]} == 2 ]
 then
     vers[2]='0'
 fi
-SUFFIX=${suff[1]//[^0-9a-zA-Z_\.\-]/}
+LOCAL_VERSION_STR=${suff[1]//[^0-9a-zA-Z_\.\-]/}
 
-MODULEDIR=${vers[0]}.${vers[1]}.${vers[2]}${SUFFIX}
+MODULE_VERSION=${vers[0]}.${vers[1]}.${vers[2]}${LOCAL_VERSION_STR}
 
-echo Kernel build for Linux version ${FILEVER}
-echo Kernel module version is ${MODULEDIR}
+OUT_SUFFIX=${KERNEL_VERSION}${LOCAL_VERSION_STR}
+
+echo Kernel build for Linux version ${KERNEL_VERSION}
+echo Kernel module version is ${MODULE_VERSION}
 echo Using config file $(basename ${CONFIG})
 echo Using local version suffix ${suff[1]}
 
-wget -N https://cdn.kernel.org/pub/linux/kernel/v${vers[0]}.x/linux-${FILEVER}.tar.xz
+# Download the file to DATADIR
+wget -N https://cdn.kernel.org/pub/linux/kernel/v${vers[0]}.x/linux-${KERNEL_VERSION}.tar.xz
 
-test ${DELETE} == 'delete' && echo Deleting extracted files if any && rm -rf linux-${FILEVER}
+# Copy to WORKDIR (no clobber in case its same dir)
+cp -n linux-${KERNEL_VERSION}.tar.xz ${WORKDIR}/
+
+# Enter work dir, delete extracted files if specified
+cd ${WORKDIR}
+test ${DELETE} == 'delete' && echo Deleting extracted files if any && rm -rf linux-${KERNEL_VERSION}
 
 echo Extracting archive...
-time tar --checkpoint=1000 --checkpoint-action="echo=#%u files extracted" -xf linux-${FILEVER}.tar.xz &&
+time tar --checkpoint=1000 --checkpoint-action="echo=#%u files extracted" -xf linux-${KERNEL_VERSION}.tar.xz &&
 
-mkdir -p /data/data/out
-
-cd linux-${FILEVER} &&
+# Do the steps one by one
+cd linux-${KERNEL_VERSION} &&
 cp ${CONFIG} ./.config &&
+
+echo [Building kernel] &&
 time make -j$(nproc) &&
+
+echo [Building modules] &&
 make -j$(nproc) modules &&
+
+echo [Installing modules] &&
 sudo make modules_install &&
-cp arch/x86/boot/bzImage ../out/vmlinuz-${FILEVER}${SUFFIX} &&
+
+echo [Installing headers] &&
 sudo make headers_install &&
-sudo mkinitcpio mkinitcpio -n -v -c ${MKINITCPIOCONF} -g ../out/initramfs-${FILEVER}${SUFFIX}.img -k ${MODULEDIR} && \
-sudo IGNORE_CC_MISMATCH=1 pacman -S --noconfirm nvidia-340xx-dkms && \
-sudo IGNORE_CC_MISMATCH=1 dkms uninstall nvidia/340.101 -k ${MODULEDIR} && \
-sudo IGNORE_CC_MISMATCH=1 dkms install nvidia/340.101 -k ${MODULEDIR} && \
-cd /data/data/out &&
-tar --xz -cf modules-${MODULEDIR}.tar.xz ${MODULEDIR}/ &&
+
+echo [Building initramfs] &&
+sudo mkinitcpio mkinitcpio -n -v -c ${MKINITCPIOCONF} -g ${OUTDIR}/initramfs-OUT_SUFFIX.img -k ${MODULE_VERSION} &&
+
+echo [Reinstalling nvidia dkms] &&
+sudo IGNORE_CC_MISMATCH=1 pacman -S --quiet --needed --noprogressbar --noconfirm nvidia-340xx-dkms &&
+
+echo [Uninstalling dkms module] &&
+sudo IGNORE_CC_MISMATCH=1 dkms uninstall nvidia/340.101 -k ${MODULE_VERSION} &&
+
+echo [Reinstalling dkms module] &&
+sudo IGNORE_CC_MISMATCH=1 dkms install nvidia/340.101 -k ${MODULE_VERSION} &&
+
+echo [Copying kernel image to output] &&
+cp arch/x86/boot/bzImage ${WORKDIR}/vmlinuz-OUT_SUFFIX &&
+
+echo [tar.xz-ing all modules] &&
+tar --xz -cf ${OUTDIR}/modules-${MODULE_VERSION}.tar.xz /lib/modules/${MODULE_VERSION}/ &&
+
 echo ------------------------ Done ------------------------- &&
-echo Built vmlinuz-${FILEVER}${SUFFIX} and initramfs-${FILEVER}${SUFFIX}.img &&
-echo Archived /lib/modules/${MODULEDIR} into modules-${MODULEDIR}.tar.xz
-test ${DELETE} == 'delete' && echo Deleting extracted files if any && rm -rf /data/data/linux-${FILEVER} &&
-echo && ls -la /data/data/out
+
+echo Built vmlinuz-OUT_SUFFIX and initramfs-OUT_SUFFIX.img &&
+
+echo Archived /lib/modules/${MODULE_VERSION} into modules-${MODULE_VERSION}.tar.xz
+
+test ${DELETE} == 'delete' && echo Deleting extracted files if any && rm -rf ${WORKDIR}/linux-${KERNEL_VERSION} &&
+
+echo && ls -la ${OUTDIR}
 
 
 
