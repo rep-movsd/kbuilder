@@ -8,10 +8,11 @@ WORKDIR=/dev/tmp
 DATADIR=/data/data
 OUTDIR=/data/data/out
 
-sudo su
-
 sudo mkdir -p ${OUTDIR}
 sudo mkdir -p ${WORKDIR}
+
+sudo chown nimbix ${WORKDIR}
+sudo chmod 777 ${WORKDIR}
 
 echo Working in ${WORKDIR}
 echo Output in ${OUTDIR}
