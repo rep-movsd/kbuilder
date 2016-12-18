@@ -42,8 +42,8 @@ cp ${CONFIG} ./.config
 time make -j$(nproc) && \
 make -j$(nproc) modules && \
 sudo make modules_install && \
-mkinitcpio mkinitcpio -c ${MKINITCPIOCONF} -g ../initramfs-${FILEVER}.img -k ${MODULEDIR} && \
 cp arch/x86/boot/bzImage ../vmlinuz-${FILEVER}.img &&
+mkinitcpio mkinitcpio -n -v -c ${MKINITCPIOCONF} -g ../initramfs-${FILEVER}.img -k ${MODULEDIR} && \
 echo ------------------------ Done ------------------------- &&
 echo Built vmlinuz-${FILEVER}.img and initramfs-${FILEVER}.img
 
