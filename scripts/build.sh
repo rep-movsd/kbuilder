@@ -41,26 +41,29 @@ wget -N https://cdn.kernel.org/pub/linux/kernel/v${vers[0]}.x/linux-${FILEVER}.t
 test ${DELETE} == 'delete' && echo Deleting extracted files if any && rm -rf linux-${FILEVER}
 
 echo Extracting archive...
-time tar --checkpoint=1000 --checkpoint-action="echo=#%u files extracted" -xf linux-${FILEVER}.tar.xz
+time tar --checkpoint=1000 --checkpoint-action="echo=#%u files extracted" -xf linux-${FILEVER}.tar.xz &&
 
-cd linux-${FILEVER}
-cp ${CONFIG} ./.config && \
-time make -j$(nproc) && \
-make -j$(nproc) modules && \
-sudo make modules_install && \
-cp arch/x86/boot/bzImage ../vmlinuz-${FILEVER} &&
+mkdir -p /data/data/out
+
+cd linux-${FILEVER} &&
+cp ${CONFIG} ./.config &&
+time make -j$(nproc) &&
+make -j$(nproc) modules &&
+sudo make modules_install &&
+cp arch/x86/boot/bzImage ../out/vmlinuz-${FILEVER}${SUFFIX} &&
 sudo make headers_install &&
-sudo mkinitcpio mkinitcpio -n -v -c ${MKINITCPIOCONF} -g ../initramfs-${FILEVER}${SUFFIX}.img -k ${MODULEDIR} && \
-sudo IGNORE_CC_MISMATCH=1 pacman -S --noconfirm nvidia-340xx-dkms &&
-sudo IGNORE_CC_MISMATCH=1 dkms install nvidia/340.101 -k ${MODULEDIR}
-
-cd /data/data
+sudo mkinitcpio mkinitcpio -n -v -c ${MKINITCPIOCONF} -g ../out/initramfs-${FILEVER}${SUFFIX}.img -k ${MODULEDIR} && \
+sudo IGNORE_CC_MISMATCH=1 pacman -S --noconfirm nvidia-340xx-dkms && \
+sudo IGNORE_CC_MISMATCH=1 dkms uninstall nvidia/340.101 -k ${MODULEDIR} && \
+sudo IGNORE_CC_MISMATCH=1 dkms install nvidia/340.101 -k ${MODULEDIR} && \
+cd /data/data/out &&
 tar --xz -cf modules-${MODULEDIR}.tar.xz ${MODULEDIR}/ &&
 echo ------------------------ Done ------------------------- &&
 echo Built vmlinuz-${FILEVER}${SUFFIX} and initramfs-${FILEVER}${SUFFIX}.img &&
 echo Archived /lib/modules/${MODULEDIR} into modules-${MODULEDIR}.tar.xz
-test ${DELETE} == 'delete' && echo Deleting extracted files if any && rm -rf linux-${FILEVER}
-echo && ls -la /data/data
+test ${DELETE} == 'delete' && echo Deleting extracted files if any && rm -rf /data/data/linux-${FILEVER} &&
+echo && ls -la /data/data/out
+
 
 
 
