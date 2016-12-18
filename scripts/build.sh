@@ -14,11 +14,15 @@ test ${CONFIG} == '' && echo Invalid argument for 'kernel config file' && exit
 MKINITCPIOCONF=${3//[^0-9a-zA-Z_/\.\-]/}
 test ${MKINITCPIOCONF} == '' && echo Invalid argument for 'mkinitcpio config file' && exit
 
-DELETE=${4//[^a-z]/}
+WORKDIR=${4//[^0-9a-zA-Z\/]/}
 
-WORKDIR=${5//[^0-9a-zA-Z\/]/}
+DELETE=${5//[^a-z]/}
+
+
 DATADIR=/data/data
 OUTDIR=/data/data/out
+
+
 
 sudo mkdir -p ${OUTDIR}
 sudo mkdir -p ${WORKDIR}

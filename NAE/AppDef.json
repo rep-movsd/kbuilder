@@ -29,14 +29,6 @@
           "type": "FILE",
           "description": "mkinitcpio.conf file used to build your initramfs"
         },
-        "delete": {
-          "positional": true,
-          "name": "delete",
-          "type": "BOOL",
-          "value": false,
-          "required": true,
-          "description": "Whether to delete the extracted kernel sources"
-        },
         "workdir": {
           "positional": true,
           "name": "Working directory",
@@ -44,6 +36,14 @@
           "value": "/data/data",
           "type": "STR",
           "description": "Location to build in"
+        },
+        "delete": {
+          "positional": true,
+          "name": "delete",
+          "type": "BOOL",
+          "value": false,
+          "required": true,
+          "description": "Whether to delete the extracted kernel sources"
         }
       },
       "description": "Build a kernel"
