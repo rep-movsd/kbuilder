@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+echo $*
+
+exit
+
+
 # major 4.7.8 config /data/data/.config
 test ${1//[^a-z]/} != 'v' && echo Invalid arguments v && exit
 FILEVER=${2//[^0-9\.]/}
@@ -34,6 +39,8 @@ echo Using config file $(basename ${CONFIG})
 echo Using local version suffix ${suff[1]}
 
 wget -N https://cdn.kernel.org/pub/linux/kernel/v${vers[0]}.x/linux-${FILEVER}.tar.xz
+
+
 
 echo Extracting archive...
 time tar xf linux-${FILEVER}.tar.xz

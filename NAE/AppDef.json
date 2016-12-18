@@ -7,14 +7,14 @@
       "scale_max": 128,
       "parameters": {
         "-v": {
-          "positional": false,
+          "positional": true,
           "name": "Kernel version",
           "required": true,
           "type": "STR",
           "description": "The kernel source to downloaded from https://cdn.kernel.org/pub/linux/kernel/ (e.g. 4.9 or 4.8.15)"
         },
         "-c": {
-          "positional": false,
+          "positional": true,
           "name": "Kernel config file",
           "required": true,
           "filter": "*.*",
@@ -22,7 +22,7 @@
           "description": "Kernel .config (ensure CONFIG_LOCALVERSION is set correctly)"
         },
         "-m": {
-          "positional": false,
+          "positional": true,
           "name": "mkinitcpio config file",
           "required": true,
           "filter": "*.conf",
