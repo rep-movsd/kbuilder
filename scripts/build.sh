@@ -28,8 +28,10 @@ fi
 
 SUFFIX=${suff[1]//[^0-9a-zA-Z_/\.\-]/}
 
+MODULEDIR=${vers[0]}.${vers[1]}.${vers[2]}
+
 echo Kernel build for Linux version ${FILEVER}
-echo Kernel module version is ${vers[0]}.${vers[1]}.${vers[2]}
+echo Kernel module version is ${MODULEDIR}
 echo Using config file $(basename ${CONFIG})
 echo Using local version suffix ${suff[1]}
 
@@ -42,7 +44,7 @@ cp ${CONFIG} ./.config
 time make -j$(nproc) && \
 make -j$(nproc) modules && \
 sudo make modules_install && \
-mkinitcpio mkinitcpio -c ${MKINITCPIOCONF} -g ../initramfs-${FILEVER}.img -k && \
+mkinitcpio mkinitcpio -c ${MKINITCPIOCONF} -g ../initramfs-${FILEVER}.img -k ${MODULEDIR} && \
 cp arch/x86/boot/bzImage ../vmlinuz-${FILEVER}.img &&
 echo ------------------------ Done ------------------------- &&
 echo Built vmlinuz-${FILEVER}.img and initramfs-${FILEVER}.img
