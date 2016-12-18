@@ -15,18 +15,16 @@ test ${MKINITCPIOCONF} == '' && echo Invalid argument for 'mkinitcpio config fil
 
 cd /data/data
 
-CONFIG_LOCALVERSION=$(grep "^CONFIG_LOCALVERSION" ${CONFIG})
-IFS='=' read -r -a suff <<< "${CONFIG_LOCALVERSION}"
 IFS='.' read -r -a vers <<< "$FILEVER"
 
-echo vers len ${#vers[@]}
 
+CONFIG_LOCALVERSION=$(grep "^CONFIG_LOCALVERSION" ${CONFIG})
+IFS='=' read -r -a suff <<< "${CONFIG_LOCALVERSION}"
 if [ ${#vers[@]} == 2 ]
 then
     vers[2]='0'
 fi
-
-SUFFIX=${suff[1]//[^0-9a-zA-Z_/\.\-]/}
+SUFFIX=${suff[1]//[^0-9a-zA-Z_\.\-]/}
 
 MODULEDIR=${vers[0]}.${vers[1]}.${vers[2]}${SUFFIX}
 
