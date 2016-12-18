@@ -39,9 +39,7 @@ echo Extracting archive...
 time tar xf linux-${FILEVER}.tar.xz
 
 cd linux-${FILEVER}
-cp ${CONFIG} ./.config
-
-
+cp ${CONFIG} ./.config && \
 time make -j$(nproc) && \
 make -j$(nproc) modules && \
 sudo make modules_install && \
