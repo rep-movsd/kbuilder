@@ -34,7 +34,9 @@ echo Using config file $(basename ${CONFIG})
 echo Using local version suffix ${suff[1]}
 
 wget -N https://cdn.kernel.org/pub/linux/kernel/v${vers[0]}.x/linux-${FILEVER}.tar.xz
-tar xvf linux-${FILEVER}.tar.xz
+
+echo Extracting archive...
+time tar xf linux-${FILEVER}.tar.xz
 
 cd linux-${FILEVER}
 cp ${CONFIG} ./.config
@@ -43,7 +45,7 @@ cp ${CONFIG} ./.config
 time make -j$(nproc) && \
 make -j$(nproc) modules && \
 sudo make modules_install && \
-sudo cp arch/x86/boot/bzImage ../vmlinuz-${FILEVER} &&
+cp arch/x86/boot/bzImage ../vmlinuz-${FILEVER} &&
 sudo make headers_install &&
 sudo mkinitcpio mkinitcpio -n -v -c ${MKINITCPIOCONF} -g ../initramfs-${FILEVER}${SUFFIX}.img -k ${MODULEDIR} && \
 sudo IGNORE_CC_MISMATCH=1 pacman -S --noconfirm nvidia-340xx-dkms &&
