@@ -4,7 +4,19 @@
 # Args are <kernel version> <config-file> <mkinitcpio-config-file> [clean]
 # 4.7.8 .config-slim mkinitcpio.conf true
 
-WORKDIR=/dev/tmp
+
+KERNEL_VERSION=${1//[^0-9\.]/}
+test ${KERNEL_VERSION} == '' && echo Invalid argument for 'version' && exit
+
+CONFIG=${2//[^0-9a-zA-Z_/\.\-]/}
+test ${CONFIG} == '' && echo Invalid argument for 'kernel config file' && exit
+
+MKINITCPIOCONF=${3//[^0-9a-zA-Z_/\.\-]/}
+test ${MKINITCPIOCONF} == '' && echo Invalid argument for 'mkinitcpio config file' && exit
+
+DELETE=${4//[^a-z]/}
+
+WORKDIR=${5//[^0-9a-zA-Z\/]/}
 DATADIR=/data/data
 OUTDIR=/data/data/out
 
@@ -17,17 +29,6 @@ sudo chmod 777 ${WORKDIR}
 echo Working in ${WORKDIR}
 echo Output in ${OUTDIR}
 
-KERNEL_VERSION=${1//[^0-9\.]/}
-test ${KERNEL_VERSION} == '' && echo Invalid argument for 'version' && exit
-
-CONFIG=${2//[^0-9a-zA-Z_/\.\-]/}
-test ${CONFIG} == '' && echo Invalid argument for 'kernel config file' && exit
-
-MKINITCPIOCONF=${3//[^0-9a-zA-Z_/\.\-]/}
-test ${MKINITCPIOCONF} == '' && echo Invalid argument for 'mkinitcpio config file' && exit
-
-
-DELETE=${4//[^a-z]/}
 
 
 # First extract the version strings
@@ -89,7 +90,7 @@ echo [Reinstalling dkms module] &&
 sudo IGNORE_CC_MISMATCH=1 dkms install nvidia/340.101 -k ${MODULE_VERSION} &&
 
 echo [Copying kernel image to output] &&
-cp arch/x86/boot/bzImage ${WORKDIR}/vmlinuz-OUT_SUFFIX &&
+cp arch/x86/boot/bzImage ${WORKDIR}/vmlinuz-${OUT_SUFFIX} &&
 
 echo [Building initramfs] &&
 sudo mkinitcpio mkinitcpio -n -v -c ${MKINITCPIOCONF} -g ${OUTDIR}/initramfs-OUT_SUFFIX.img -k ${MODULE_VERSION} &&

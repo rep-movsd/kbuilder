@@ -36,6 +36,14 @@
           "value": false,
           "required": true,
           "description": "Whether to delete the extracted kernel sources"
+        },
+        "workdir": {
+          "positional": true,
+          "name": "Working directory",
+          "required": true,
+          "value": "/data/data",
+          "type": "STR",
+          "description": "Location to build in"
         }
       },
       "description": "Build a kernel"
