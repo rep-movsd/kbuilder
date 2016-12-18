@@ -8,6 +8,8 @@ WORKDIR=/dev/tmp
 DATADIR=/data/data
 OUTDIR=/data/data/out
 
+sudo su
+
 sudo mkdir -p ${OUTDIR}
 sudo mkdir -p ${WORKDIR}
 
@@ -51,11 +53,11 @@ echo Using local version suffix ${suff[1]}
 wget -N https://cdn.kernel.org/pub/linux/kernel/v${vers[0]}.x/linux-${KERNEL_VERSION}.tar.xz
 
 # Copy to WORKDIR (no clobber in case its same dir)
-cp -n linux-${KERNEL_VERSION}.tar.xz ${WORKDIR}/
+sudo cp -n linux-${KERNEL_VERSION}.tar.xz ${WORKDIR}/
 
 # Enter work dir, delete extracted files if specified
 cd ${WORKDIR}
-test ${DELETE} == 'delete' && echo Deleting extracted files if any && rm -rf linux-${KERNEL_VERSION}
+#test ${DELETE} == 'delete' && echo Deleting extracted files if any && rm -rf linux-${KERNEL_VERSION}
 
 echo Extracting archive...
 time tar --checkpoint=10000 --checkpoint-action="echo=#%u files extracted" -xf linux-${KERNEL_VERSION}.tar.xz &&
@@ -102,4 +104,4 @@ echo Archived /lib/modules/${MODULE_VERSION} into modules-${MODULE_VERSION}.tar.
 
 echo && ls -la ${OUTDIR}
 
-test ${DELETE} == 'delete' && echo Deleting extracted files if any && rm -rf ${WORKDIR}/linux-${KERNEL_VERSION}
+#test ${DELETE} == 'delete' && echo Deleting extracted files if any && rm -rf ${WORKDIR}/linux-${KERNEL_VERSION}
