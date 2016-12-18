@@ -50,7 +50,10 @@ cp arch/x86/boot/bzImage ../vmlinuz-${FILEVER} &&
 mkinitcpio mkinitcpio -n -v -c ${MKINITCPIOCONF} -g ../initramfs-${FILEVER}${SUFFIX}.img -k ${MODULEDIR} && \
 sudo pacman -S --noconfirm nvidia-340xx-dkms &&
 sudo dkms uninstall nvidia/340.101 &&
-sudo dkms install nvidia/340.101 &&
+sudo dkms install nvidia/340.101
+
+sudo cat /var/lib/dkms/nvidia/340.101/build/make.log
+
 tar cf --xz ../modules-${MODULEDIR}.tar.xz ${MODULEDIR}/ &&
 echo ------------------------ Done ------------------------- &&
 echo Built vmlinuz-${FILEVER}${SUFFIX} and initramfs-${FILEVER}${SUFFIX}.img &&
