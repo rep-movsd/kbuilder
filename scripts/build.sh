@@ -13,7 +13,7 @@ test ${5//[^a-z]/} != 'm' && echo Invalid arguments m && exit
 MKINITCPIOCONF=${6//[^0-9a-zA-Z_/\.\-]/}
 test ${MKINITCPIOCONF} == '' && echo Invalid argument for 'mkinitcpio config file' && exit
 
-cd ~nimbix/data/data
+cd /data/data
 
 CONFIG_LOCALVERSION=$(grep "^CONFIG_LOCALVERSION" ${CONFIG})
 IFS='=' read -r -a suff <<< "${CONFIG_LOCALVERSION}"
