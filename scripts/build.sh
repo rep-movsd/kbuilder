@@ -28,7 +28,7 @@ fi
 
 SUFFIX=${suff[1]//[^0-9a-zA-Z_/\.\-]/}
 
-MODULEDIR=${vers[0]}.${vers[1]}.${vers[2]}
+MODULEDIR=${vers[0]}.${vers[1]}.${vers[2]}${SUFFIX}
 
 echo Kernel build for Linux version ${FILEVER}
 echo Kernel module version is ${MODULEDIR}
