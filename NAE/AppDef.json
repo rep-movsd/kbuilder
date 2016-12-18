@@ -6,14 +6,14 @@
       "name": "Build",
       "scale_max": 128,
       "parameters": {
-        "-v": {
+        "version": {
           "positional": true,
           "name": "Kernel version",
           "required": true,
           "type": "STR",
           "description": "The kernel source to downloaded from https://cdn.kernel.org/pub/linux/kernel/ (e.g. 4.9 or 4.8.15)"
         },
-        "-c": {
+        "kernelconf": {
           "positional": true,
           "name": "Kernel config file",
           "required": true,
@@ -21,13 +21,21 @@
           "type": "FILE",
           "description": "Kernel .config (ensure CONFIG_LOCALVERSION is set correctly)"
         },
-        "-m": {
+        "mkinitcpioconf": {
           "positional": true,
           "name": "mkinitcpio config file",
           "required": true,
           "filter": "*.conf",
           "type": "FILE",
           "description": "mkinitcpio.conf file used to build your initramfs"
+        },
+        "delete": {
+          "positional": true,
+          "name": "delete",
+          "type": "BOOL",
+          "value": false,
+          "required": true,
+          "description": "Whether to delete the extracted kernel sources"
         }
       },
       "description": "Build a kernel"

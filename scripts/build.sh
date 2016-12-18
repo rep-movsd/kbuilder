@@ -1,22 +1,20 @@
 #!/usr/bin/env bash
 
-echo $*
 
-exit
+# Args are <kernel version> <config-file> <mkinitcpio-config-file> [clean]
+# 4.7.8 .config-slim mkinitcpio.conf true
 
-
-# major 4.7.8 config /data/data/.config
-test ${1//[^a-z]/} != 'v' && echo Invalid arguments v && exit
-FILEVER=${2//[^0-9\.]/}
+FILEVER=${1//[^0-9\.]/}
 test ${FILEVER} == '' && echo Invalid argument for 'version' && exit
 
-test ${3//[^a-z]/} != 'c' && echo Invalid arguments c && exit
-CONFIG=${4//[^0-9a-zA-Z_/\.\-]/}
+CONFIG=${2//[^0-9a-zA-Z_/\.\-]/}
 test ${CONFIG} == '' && echo Invalid argument for 'kernel config file' && exit
 
-test ${5//[^a-z]/} != 'm' && echo Invalid arguments m && exit
-MKINITCPIOCONF=${6//[^0-9a-zA-Z_/\.\-]/}
+MKINITCPIOCONF=${3//[^0-9a-zA-Z_/\.\-]/}
 test ${MKINITCPIOCONF} == '' && echo Invalid argument for 'mkinitcpio config file' && exit
+
+DELETE=${4//[^a-z]/}
+
 
 cd /data/data
 
@@ -40,6 +38,7 @@ echo Using local version suffix ${suff[1]}
 
 wget -N https://cdn.kernel.org/pub/linux/kernel/v${vers[0]}.x/linux-${FILEVER}.tar.xz
 
+test ${DELETE} == 'delete' && echo Deleting extracted files if any && rm -rf linux-${FILEVER}
 
 
 echo Extracting archive...
@@ -61,6 +60,7 @@ tar cf --xz modules-${MODULEDIR}.tar.xz ${MODULEDIR}/ &&
 echo ------------------------ Done ------------------------- &&
 echo Built vmlinuz-${FILEVER}${SUFFIX} and initramfs-${FILEVER}${SUFFIX}.img &&
 echo Archived /lib/modules/${MODULEDIR} into modules-${MODULEDIR}.tar.xz
+test ${DELETE} == 'delete' && echo Deleting extracted files if any && rm -rf linux-${FILEVER}
 echo && ls -la /data/data
 
 
