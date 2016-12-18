@@ -37,12 +37,12 @@ wget -N https://cdn.kernel.org/pub/linux/kernel/v${vers[0]}.x/linux-${FILEVER}.t
 tar xvf linux-${FILEVER}.tar.xz
 
 cd linux-${FILEVER}
-cp ../${CONFIG} ./.config
+cp ${CONFIG} ./.config
 
 time make -j$(nproc) && \
 make -j$(nproc) modules && \
 sudo make modules_install && \
-mkinitcpio mkinitcpio -c ../${MKINITCPIOCONF} -g ../initramfs-${FILEVER}.img -k && \
+mkinitcpio mkinitcpio -c ${MKINITCPIOCONF} -g ../initramfs-${FILEVER}.img -k && \
 cp arch/x86/boot/bzImage ../vmlinuz-${FILEVER}.img &&
 echo ------------------------ Done ------------------------- &&
 echo Built vmlinuz-${FILEVER}.img and initramfs-${FILEVER}.img
