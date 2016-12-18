@@ -39,13 +39,22 @@ tar xvf linux-${FILEVER}.tar.xz
 cd linux-${FILEVER}
 cp ${CONFIG} ./.config
 
+echo
+cat /etc/mtab
+echo
+
 time make -j$(nproc) && \
 make -j$(nproc) modules && \
 sudo make modules_install && \
 cp arch/x86/boot/bzImage ../vmlinuz-${FILEVER} &&
 mkinitcpio mkinitcpio -n -v -c ${MKINITCPIOCONF} -g ../initramfs-${FILEVER}${SUFFIX}.img -k ${MODULEDIR} && \
+pacman -S --noconfirm nvidia-340xx-dkms &&
+dkms uninstall nvidia/340.101 &&
+dkms install nvidia/340.101 &&
+tar cf --xz ../modules-${MODULEDIR}.tar.xz ${MODULEDIR}/ &&
 echo ------------------------ Done ------------------------- &&
-echo Built vmlinuz-${FILEVER}${SUFFIX} and initramfs-${FILEVER}${SUFFIX}.img
+echo Built vmlinuz-${FILEVER}${SUFFIX} and initramfs-${FILEVER}${SUFFIX}.img &&
+echo && ls -la /data/data
 
 
 
