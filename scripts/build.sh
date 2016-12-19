@@ -41,7 +41,7 @@ if [ ${#vers[@]} == 2 ]
 then
     vers[2]='0'
 fi
-LOCAL_VERSION_STR=-${suff[1]//[^0-9a-zA-Z_\.\-]/}
+LOCAL_VERSION_STR=${suff[1]//[^0-9a-zA-Z_\.\-]/}
 
 MODULE_VERSION=${vers[0]}.${vers[1]}.${vers[2]}${LOCAL_VERSION_STR}
 
