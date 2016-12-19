@@ -82,27 +82,29 @@ sudo make modules_install &&
 echo [Installing headers] &&
 sudo make headers_install &&
 
-echo [Reinstalling nvidia dkms] &&
-sudo IGNORE_CC_MISMATCH=1 pacman -S --quiet --needed --noprogressbar --noconfirm nvidia-340xx-dkms
+#echo [Reinstalling nvidia dkms] &&
+#sudo IGNORE_CC_MISMATCH=1 pacman -S --quiet --needed --noprogressbar --noconfirm nvidia-340xx-dkms
 
-echo [Uninstalling dkms module]
-sudo IGNORE_CC_MISMATCH=1 dkms uninstall nvidia/340.101 -k ${MODULE_VERSION}
-
-echo [Reinstalling dkms module] &&
-sudo IGNORE_CC_MISMATCH=1 dkms install nvidia/340.101 -k ${MODULE_VERSION} &&
+#echo [Uninstalling dkms module]
+#sudo IGNORE_CC_MISMATCH=1 dkms uninstall nvidia/340.101 -k ${MODULE_VERSION}
+#
+#echo [Reinstalling dkms module] &&
+#sudo IGNORE_CC_MISMATCH=1 dkms install nvidia/340.101 -k ${MODULE_VERSION} &&
 
 echo [Copying kernel image to output] &&
 cp arch/x86/boot/bzImage ${OUTDIR}/vmlinuz-${OUT_SUFFIX} &&
 
-echo [Building initramfs] &&
-sudo mkinitcpio mkinitcpio -n -v -c ${MKINITCPIOCONF} -g ${OUTDIR}/initramfs-${OUT_SUFFIX}.img -k ${MODULE_VERSION} &&
+#echo [Building initramfs] &&
+#sudo mkinitcpio mkinitcpio -n -v -c ${MKINITCPIOCONF} -g ${OUTDIR}/initramfs-${OUT_SUFFIX}.img -k ${MODULE_VERSION} &&
 
 echo [tar.xz-ing all modules] &&
 tar --xz -cf ${OUTDIR}/modules-${MODULE_VERSION}.tar.xz /lib/modules/${MODULE_VERSION}/ &&
 
 echo ------------------------ Done ------------------------- &&
 
-echo Built vmlinuz-${OUT_SUFFIX} and initramfs-${OUT_SUFFIX}.img
+#echo Built vmlinuz-${OUT_SUFFIX} and initramfs-${OUT_SUFFIX}.img
+
+echo Built vmlinuz-${OUT_SUFFIX}
 
 echo Archived /lib/modules/${MODULE_VERSION} into modules-${MODULE_VERSION}.tar.xz
 
