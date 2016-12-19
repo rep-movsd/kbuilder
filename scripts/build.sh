@@ -18,10 +18,8 @@ WORKDIR=${4//[^0-9a-zA-Z\/]/}
 
 DELETE=${5//[^a-z]/}
 
-
 DATADIR=/data/data
 OUTDIR=/data/data/out
-
 
 
 sudo mkdir -p ${OUTDIR}
@@ -63,7 +61,7 @@ sudo cp -n linux-${KERNEL_VERSION}.tar.xz ${WORKDIR}/
 
 # Enter work dir, delete extracted files if specified
 cd ${WORKDIR}
-#test ${DELETE} == 'delete' && echo Deleting extracted files if any && rm -rf linux-${KERNEL_VERSION}
+test "${DELETE}" == "delete" && echo Deleting extracted files if any && rm -rf linux-${KERNEL_VERSION}
 
 echo Extracting archive...
 time tar --checkpoint=10000 --checkpoint-action="echo=#%u files extracted" -xf linux-${KERNEL_VERSION}.tar.xz &&
@@ -97,14 +95,14 @@ echo [Copying kernel image to output] &&
 cp arch/x86/boot/bzImage ${OUTDIR}/vmlinuz-${OUT_SUFFIX} &&
 
 echo [Building initramfs] &&
-sudo mkinitcpio mkinitcpio -n -v -c ${MKINITCPIOCONF} -g ${OUTDIR}/initramfs-OUT_SUFFIX.img -k ${MODULE_VERSION} &&
+sudo mkinitcpio mkinitcpio -n -v -c ${MKINITCPIOCONF} -g ${OUTDIR}/initramfs-${OUT_SUFFIX}.img -k ${MODULE_VERSION} &&
 
 echo [tar.xz-ing all modules] &&
 tar --xz -cf ${OUTDIR}/modules-${MODULE_VERSION}.tar.xz /lib/modules/${MODULE_VERSION}/ &&
 
 echo ------------------------ Done ------------------------- &&
 
-echo Built vmlinuz-OUT_SUFFIX and initramfs-OUT_SUFFIX.img
+echo Built vmlinuz-${OUT_SUFFIX} and initramfs-${OUT_SUFFIX}.img
 
 echo Archived /lib/modules/${MODULE_VERSION} into modules-${MODULE_VERSION}.tar.xz
 
