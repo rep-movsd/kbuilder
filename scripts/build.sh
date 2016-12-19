@@ -52,7 +52,6 @@ echo Kernel module version is ${MODULE_VERSION}
 echo Using config file $(basename ${CONFIG})
 echo Using local version suffix ${LOCAL_VERSION_STR}
 echo Full suffix ${OUT_SUFFIX}
-exit
 
 # Download the file to DATADIR
 wget -N https://cdn.kernel.org/pub/linux/kernel/v${vers[0]}.x/linux-${KERNEL_VERSION}.tar.xz
