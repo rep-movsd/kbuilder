@@ -51,7 +51,7 @@ echo Kernel build for Linux version ${KERNEL_VERSION}
 echo Kernel module version is ${MODULE_VERSION}
 echo Using config file $(basename ${CONFIG})
 echo Using local version suffix ${LOCAL_VERSION_STR}
-
+echo Full suffix ${OUT_SUFFIX}
 exit
 
 # Download the file to DATADIR
