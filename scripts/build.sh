@@ -32,7 +32,6 @@ echo Working in ${WORKDIR}
 echo Output in ${OUTDIR}
 
 
-
 # First extract the version strings
 cd ${DATADIR}
 IFS='.' read -r -a vers <<< "$KERNEL_VERSION"
@@ -51,7 +50,9 @@ OUT_SUFFIX=${KERNEL_VERSION}${LOCAL_VERSION_STR}
 echo Kernel build for Linux version ${KERNEL_VERSION}
 echo Kernel module version is ${MODULE_VERSION}
 echo Using config file $(basename ${CONFIG})
-echo Using local version suffix ${suff[1]}
+echo Using local version suffix ${LOCAL_VERSION_STR}
+
+exit
 
 # Download the file to DATADIR
 wget -N https://cdn.kernel.org/pub/linux/kernel/v${vers[0]}.x/linux-${KERNEL_VERSION}.tar.xz
