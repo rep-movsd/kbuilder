@@ -21,6 +21,7 @@
           "type": "FILE",
           "description": "Kernel .config (ensure CONFIG_LOCALVERSION is set correctly)"
         },
+        
         "mkinitcpioconf": {
           "positional": true,
           "name": "mkinitcpio config file",
@@ -29,6 +30,7 @@
           "type": "FILE",
           "description": "mkinitcpio.conf file used to build your initramfs"
         },
+        
         "workdir": {
           "positional": true,
           "name": "Working directory",
@@ -37,6 +39,16 @@
           "type": "STR",
           "description": "Location to build in"
         },
+        
+        "workdir": {
+          "positional": true,
+          "name": "NVIDIA version",
+          "required": true,
+          "value": "340.101",
+          "type": "STR",
+          "description": "Version of nVidia DKMS modules to build"
+        },
+        
         "delete": {
           "positional": true,
           "name": "delete",

@@ -16,11 +16,12 @@ test ${MKINITCPIOCONF} == '' && echo Invalid argument for 'mkinitcpio config fil
 
 WORKDIR=${4//[^0-9a-zA-Z\/]/}
 
-DELETE=${5//[^a-z]/}
+NVIDIA_VERSION=${5//[^a-z]/}
+
+DELETE=${6//[^a-z]/}
 
 DATADIR=/data/data
 OUTDIR=/data/data/out
-
 
 sudo mkdir -p ${OUTDIR}
 sudo mkdir -p ${WORKDIR}
@@ -51,6 +52,7 @@ echo Kernel build for Linux version ${KERNEL_VERSION}
 echo Kernel module version is ${MODULE_VERSION}
 echo Using config file $(basename ${CONFIG})
 echo Using local version suffix ${LOCAL_VERSION_STR}
+echo Using nvidia version ${NVIDIA_VERSION}
 echo Full suffix ${OUT_SUFFIX}
 
 # Download the file to DATADIR
@@ -86,10 +88,10 @@ sudo make headers_install &&
 #sudo IGNORE_CC_MISMATCH=1 pacman -S --quiet --needed --noprogressbar --noconfirm nvidia-340xx-dkms
 
 echo [Uninstalling dkms module]
-sudo IGNORE_CC_MISMATCH=1 dkms uninstall nvidia/340.101 -k ${MODULE_VERSION}
+sudo IGNORE_CC_MISMATCH=1 dkms uninstall nvidia/NVIDIA_VERSION -k ${MODULE_VERSION}
 
 echo [Reinstalling dkms module] &&
-sudo IGNORE_CC_MISMATCH=1 dkms install nvidia/340.101 -k ${MODULE_VERSION} &&
+sudo IGNORE_CC_MISMATCH=1 dkms install nvidia/NVIDIA_VERSION -k ${MODULE_VERSION} &&
 
 echo [Copying kernel image to output] &&
 cp arch/x86/boot/bzImage ${OUTDIR}/vmlinuz-${OUT_SUFFIX} &&
