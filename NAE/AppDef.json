@@ -40,7 +40,7 @@
           "description": "Location to build in"
         },
         
-        "workdir": {
+        "nvidia": {
           "positional": true,
           "name": "NVIDIA version",
           "required": true,
